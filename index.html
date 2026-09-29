@@ -3,281 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#eef1fb">
-  <meta name="description" content="RuleMaster helps Discord communities manage moderation, rules, suggestions, announcements, Roblox tools, and staff.">
-  <title>RuleMaster — Discord Community Management Bot</title>
-
+  <meta name="theme-color" content="#0e0f13">
+  <title>RuleMaster 2.0 — Dashboard</title>
+  <meta name="description" content="Manage RuleMaster 2.0 on your Discord servers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <header class="navbar" id="top">
-    <div class="nav-container">
-      <a class="logo" href="#top" aria-label="RuleMaster home">
-        <span class="logo-icon">R</span>
-        <span>RuleMaster</span>
-      </a>
 
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#features">Features</a>
-        <a href="#commands">Commands</a>
-        <a href="#about">About</a>
-      </nav>
-
-      <a class="nav-button"
-         href="https://discord.com/oauth2/authorize?client_id=1554166316628320306&amp;permissions=8&amp;scope=bot%20applications.commands"
-         target="_blank" rel="noopener noreferrer">
-        Add to Discord <span aria-hidden="true">↗</span>
-      </a>
-
-      <button class="mobile-menu-button" id="mobileMenuButton"
-              type="button" aria-label="Open menu"
-              aria-controls="mobileMenu" aria-expanded="false">
-        <span aria-hidden="true">☰</span>
+  <!-- LOGIN SCREEN -->
+  <section id="loginView" class="login-view" hidden>
+    <div class="login-card">
+      <div class="logo-icon big">R</div>
+      <h1>RuleMaster <span>2.0</span></h1>
+      <p>Log in with your Discord account to manage your servers. No separate account needed.</p>
+      <button id="loginBtn" class="btn btn-discord">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.4 18.4 0 0 0-5.6 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 .-.2 13.6.3 18.1a19.9 19.9 0 0 0 6 3l1.3-2a13 13 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4-2 1 1.3 2a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.5-13.7ZM8.3 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm7.4 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg>
+        Login with Discord
       </button>
+      <small>We only read your username, avatar and server list.</small>
     </div>
+  </section>
 
-    <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation">
-      <a href="#features">Features</a>
-      <a href="#commands">Commands</a>
-      <a href="#about">About</a>
-      <a class="mobile-invite"
-         href="https://discord.com/oauth2/authorize?client_id=1554166316628320306&amp;permissions=8&amp;scope=bot%20applications.commands"
-         target="_blank" rel="noopener noreferrer">Add to Discord ↗</a>
-    </nav>
-  </header>
+  <!-- APP -->
+  <div id="appView" class="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#/dashboard">
+        <span class="logo-icon">R</span>
+        <span>RuleMaster <em>2.0</em></span>
+      </a>
 
-  <main>
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="status-badge">
-          <span class="status-dot" aria-hidden="true"></span>
-          Made for better communities
-        </div>
-
-        <h1 id="hero-title">
-          A clearer way to <span>manage your Discord server.</span>
-        </h1>
-
-        <p class="hero-description">
-          Meet RuleMaster. Moderation, rules, suggestions, announcements,
-          Roblox tools, and staff management — all where your community already is.
-        </p>
-
-        <div class="hero-buttons">
-          <a class="primary-button"
-             href="https://discord.com/oauth2/authorize?client_id=1554166316628320306&amp;permissions=8&amp;scope=bot%20applications.commands"
-             target="_blank" rel="noopener noreferrer">
-            Add RuleMaster <span aria-hidden="true">↗</span>
-          </a>
-          <a class="secondary-button"
-             href="https://discord.gg/P4tCbwVYG"
-             target="_blank" rel="noopener noreferrer">
-            Support server
-          </a>
-        </div>
-
-        <p class="hero-note">Free to use · Slash commands · Easy setup</p>
-      </div>
-
-      <div class="hero-card-wrapper" aria-label="Preview of RuleMaster in Discord">
-        <div class="hero-card">
-          <div class="card-top">
-            <div class="window-dots" aria-hidden="true">
-              <i></i><i></i><i></i>
-            </div>
-            <span class="channel-name">#general</span>
-          </div>
-
-          <div class="discord-message">
-            <span class="bot-avatar" aria-hidden="true">R</span>
-            <div class="message-body">
-              <div class="message-name">RuleMaster <span class="bot-tag">BOT</span></div>
-              <p class="message-text">
-                Welcome! I'm ready to help manage your community.
-              </p>
-              <div class="message-pills">
-                <span>Moderation</span>
-                <span>Rules</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="discord-message">
-            <span class="message-avatar" aria-hidden="true">Y</span>
-            <div class="message-body">
-              <div class="message-name">you</div>
-              <p class="message-text"><strong>/help</strong></p>
-            </div>
-          </div>
-
-          <div class="command-preview">
-            <div class="command-header">RULEMASTER REPLIED</div>
-            <div class="command">
-              <span class="command-symbol">↳</span>
-              Choose a command to get started.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats-section" aria-label="RuleMaster at a glance">
-      <div class="stat"><strong>9</strong><span>Command groups</span></div>
-      <div class="stat"><strong>8</strong><span>Feature areas</span></div>
-      <div class="stat"><strong>Free</strong><span>To use</span></div>
-    </section>
-
-    <section class="section" id="features">
-      <div class="section-heading">
-        <div>
-          <span class="section-label">FEATURES</span>
-          <h2>Everything your server needs.</h2>
-        </div>
-        <p>Useful tools, all in one bot.</p>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">🛡</div>
-          <h3>Moderation</h3>
-          <p>Manage warnings, timeouts, kicks, bans, and messages without leaving Discord.</p>
-          <div class="feature-list"><span>Warnings</span><span>Timeouts</span><span>Kicks &amp; bans</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">📋</div>
-          <h3>Rules</h3>
-          <p>Keep server rules organized and easy for your members and staff to find.</p>
-          <div class="feature-list"><span>Rule management</span><span>Easy access</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">💡</div>
-          <h3>Suggestions</h3>
-          <p>Give members a place to share ideas and staff a simple way to review them.</p>
-          <div class="feature-list"><span>Submit ideas</span><span>Approve or deny</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">📢</div>
-          <h3>Announcements</h3>
-          <p>Send formatted updates to the right channel, with the right message.</p>
-          <div class="feature-list"><span>Custom titles</span><span>Channel selection</span><span>Role pings</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">📊</div>
-          <h3>Server Statistics</h3>
-          <p>Get a quick view of members, bots, channels, and roles.</p>
-          <div class="feature-list"><span>Members</span><span>Channels</span><span>Roles</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">🎮</div>
-          <h3>Roblox Tools</h3>
-          <p>Look up Roblox users and games directly from your Discord server.</p>
-          <div class="feature-list"><span>User lookup</span><span>Game lookup</span><span>Place IDs</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">🔐</div>
-          <h3>Staff Management</h3>
-          <p>Keep staff information, notes, promotions, and demotions organized.</p>
-          <div class="feature-list"><span>Staff notes</span><span>Promotions</span><span>Demotions</span></div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon" aria-hidden="true">⚙</div>
-          <h3>Server Settings</h3>
-          <p>Set role permissions and control who can use RuleMaster commands.</p>
-          <div class="feature-list"><span>Role restrictions</span><span>Command permissions</span></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section commands-section" id="commands">
-      <div class="section-heading">
-        <div>
-          <span class="section-label">COMMANDS</span>
-          <h2>Commands, ready to run.</h2>
-        </div>
-        <p>Find what you need right in Discord.</p>
-      </div>
-
-      <div class="commands-container">
-        <div class="command-row"><code>/help</code><span>View available commands</span></div>
-        <div class="command-row"><code>/rules</code><span>View and manage rules</span></div>
-        <div class="command-row"><code>/moderation</code><span>Moderate members</span></div>
-        <div class="command-row"><code>/suggest</code><span>Share and review ideas</span></div>
-        <div class="command-row"><code>/announce</code><span>Post an announcement</span></div>
-        <div class="command-row"><code>/stats</code><span>View server statistics</span></div>
-        <div class="command-row"><code>/roblox</code><span>Look up users and games</span></div>
-        <div class="command-row"><code>/staff</code><span>Manage your staff team</span></div>
-        <div class="command-row"><code>/settings</code><span>Set command permissions</span></div>
-      </div>
-    </section>
-
-    <section class="section about-section" id="about">
-      <div class="about-card">
-        <div>
-          <span class="section-label">ABOUT RULEMASTER</span>
-          <h2>Built for communities.</h2>
-        </div>
-        <div class="about-content">
-          <p>
-            RuleMaster puts everyday server administration directly into Discord.
-            From moderation and rules to suggestions, announcements, Roblox tools,
-            and staff management, it helps your team stay organized.
-          </p>
-          <a class="text-link"
-             href="https://discord.gg/P4tCbwVYG"
-             target="_blank" rel="noopener noreferrer">
-            Visit the support server <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-section">
-      <div class="cta-card">
-        <span class="section-label">READY?</span>
-        <h2>Make more room for your community.</h2>
-        <p>Add RuleMaster and keep your server running smoothly.</p>
-        <a class="primary-button"
-           href="https://discord.com/oauth2/authorize?client_id=1554166316628320306&amp;permissions=8&amp;scope=bot%20applications.commands"
-           target="_blank" rel="noopener noreferrer">
-          Add RuleMaster to Discord <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-container">
-      <div class="footer-brand">
-        <a class="logo" href="#top">
-          <span class="logo-icon">R</span>
-          <span>RuleMaster</span>
-        </a>
-        <p>Discord community management made simple.</p>
-      </div>
-
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="#features">Features</a>
-        <a href="#commands">Commands</a>
-        <a href="https://discord.gg/P4tCbwVYG" target="_blank" rel="noopener noreferrer">Support</a>
-        <a href="https://github.com/BlackLuc/RuleMasterWebsite" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <nav class="nav">
+        <a href="#/dashboard" data-route="dashboard">▦ <span>Dashboard</span></a>
+        <a href="#/servers" data-route="servers">◎ <span>Servers</span></a>
+        <a href="#/commands" data-route="commands">⌘ <span>Commands</span></a>
+        <a href="#/settings" data-route="settings">⚙ <span>Settings</span></a>
+        <div class="nav-sep"></div>
+        <a href="https://discord.gg/" target="_blank" rel="noopener">? <span>Support</span></a>
+        <a href="#/docs" data-route="docs">▤ <span>Documentation</span></a>
       </nav>
-    </div>
 
-    <div class="footer-bottom">
-      <span>© <span id="year"></span> RuleMaster</span>
-      <span>Made for Discord communities.</span>
+      <div class="profile">
+        <img id="userAvatar" alt="" class="avatar">
+        <div class="profile-text">
+          <strong id="userName">User</strong>
+          <small id="userId"></small>
+        </div>
+        <button id="logoutBtn" class="icon-btn" title="Logout" aria-label="Logout">⏻</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button id="menuBtn" class="icon-btn menu-btn" aria-label="Open menu">☰</button>
+        <h2 id="pageTitle">Dashboard</h2>
+        <a class="btn btn-ghost" id="inviteTop" target="_blank" rel="noopener">Add RuleMaster ↗</a>
+      </header>
+      <main id="content" class="content"></main>
     </div>
-  </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
 </body>
 </html>
