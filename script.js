@@ -21,6 +21,10 @@ let currentUser = null;
 let currentServers = [];
 let selectedServer = null;
 
+// =================================
+// TOAST
+// =================================
+
 function showToast(message) {
     if (!toast) {
         return;
@@ -34,17 +38,28 @@ function showToast(message) {
     }, 3000);
 }
 
+// =================================
+// API
+// =================================
+
 async function apiFetch(endpoint, options = {}) {
+    const config = {
+        credentials: "include",
+        ...options
+    };
+
+    // Only send Content-Type when there is actually
+    // a JSON request body.
+    if (config.body) {
+        config.headers = {
+            "Content-Type": "application/json",
+            ...(config.headers || {})
+        };
+    }
+
     const response = await fetch(
         `${API_URL}${endpoint}`,
-        {
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                ...(options.headers || {})
-            },
-            ...options
-        }
+        config
     );
 
     if (!response.ok) {
@@ -66,6 +81,10 @@ async function apiFetch(endpoint, options = {}) {
     return response.json();
 }
 
+// =================================
+// LOGIN VIEW
+// =================================
+
 function showLogin() {
     if (loginView) {
         loginView.classList.remove("hidden");
@@ -85,6 +104,10 @@ function showApp() {
         appView.classList.remove("hidden");
     }
 }
+
+// =================================
+// USER
+// =================================
 
 function getAvatarUrl(user) {
     if (!user || !user.avatar) {
@@ -114,6 +137,10 @@ function updateUserUI() {
     }
 }
 
+// =================================
+// SESSION
+// =================================
+
 async function checkSession() {
     try {
         const data = await apiFetch("/auth/me");
@@ -126,13 +153,17 @@ async function checkSession() {
         currentUser = data.user;
 
         updateUserUI();
+
         showApp();
 
         await loadServers();
 
         return true;
     } catch (error) {
-        console.error("Session check failed:", error);
+        console.error(
+            "Session check failed:",
+            error
+        );
 
         showLogin();
 
@@ -140,10 +171,18 @@ async function checkSession() {
     }
 }
 
+// =================================
+// LOGIN
+// =================================
+
 function login() {
     window.location.href =
         `${API_URL}/auth/discord`;
 }
+
+// =================================
+// LOGOUT
+// =================================
 
 async function logout() {
     try {
@@ -162,11 +201,18 @@ async function logout() {
 
         showToast("Logged out.");
     } catch (error) {
-        console.error("Logout failed:", error);
+        console.error(
+            "Logout failed:",
+            error
+        );
 
         showToast("Logout failed.");
     }
 }
+
+// =================================
+// SERVERS
+// =================================
 
 async function loadServers() {
     try {
@@ -185,9 +231,16 @@ async function loadServers() {
             selectServer(currentServers[0]);
         }
     } catch (error) {
-        console.error("Could not load servers:", error);
+        console.error(
+            "Could not load servers:",
+            error
+        );
 
-        if (error.message.includes("logged in")) {
+        if (
+            error.message.includes(
+                "logged in"
+            )
+        ) {
             showLogin();
             return;
         }
@@ -200,7 +253,9 @@ async function loadServers() {
 
 function renderServers() {
     const serverContainer =
-        document.getElementById("serverList");
+        document.getElementById(
+            "serverList"
+        );
 
     if (!serverContainer) {
         return;
@@ -223,7 +278,8 @@ function renderServers() {
     }
 
     currentServers.forEach((server) => {
-        const card = document.createElement("button");
+        const card =
+            document.createElement("button");
 
         card.className = "server-card";
 
@@ -247,7 +303,9 @@ function renderServers() {
 
             <div class="server-info">
                 <strong>${escapeHtml(server.name)}</strong>
-                <span>${server.owner ? "Owner" : "Manage Server"}</span>
+                <span>
+                    ${server.owner ? "Owner" : "Manage Server"}
+                </span>
             </div>
         `;
 
@@ -264,8 +322,13 @@ function selectServer(server) {
     selectedServer = server;
 
     renderServers();
+
     loadServerSettings(server.id);
 }
+
+// =================================
+// SETTINGS
+// =================================
 
 async function loadServerSettings(guildId) {
     try {
@@ -289,7 +352,6 @@ async function loadServerSettings(guildId) {
 async function saveServerSettings(settings) {
     if (!selectedServer) {
         showToast("Select a server first.");
-
         return;
     }
 
@@ -309,14 +371,21 @@ async function saveServerSettings(settings) {
             error
         );
 
-        showToast("Could not save settings.");
+        showToast(
+            "Could not save settings."
+        );
     }
 }
 
 function renderSettings(settings) {
-    const moderation = settings.moderation || {};
-    const logging = settings.logging || {};
-    const welcome = settings.welcome || {};
+    const moderation =
+        settings.moderation || {};
+
+    const logging =
+        settings.logging || {};
+
+    const welcome =
+        settings.welcome || {};
 
     if (!content) {
         return;
@@ -331,14 +400,18 @@ function renderSettings(settings) {
                 <div class="settings-card-header">
                     <div>
                         <h2>Moderation</h2>
-                        <p>Configure RuleMaster moderation features.</p>
+                        <p>
+                            Configure RuleMaster moderation features.
+                        </p>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div>
                         <strong>Moderation enabled</strong>
-                        <span>Enable RuleMaster moderation.</span>
+                        <span>
+                            Enable RuleMaster moderation.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -354,7 +427,9 @@ function renderSettings(settings) {
                 <div class="setting-row">
                     <div>
                         <strong>Delete invites</strong>
-                        <span>Automatically remove Discord invites.</span>
+                        <span>
+                            Automatically remove Discord invites.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -370,7 +445,9 @@ function renderSettings(settings) {
                 <div class="setting-row">
                     <div>
                         <strong>Delete links</strong>
-                        <span>Automatically remove links.</span>
+                        <span>
+                            Automatically remove links.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -386,7 +463,9 @@ function renderSettings(settings) {
                 <div class="setting-row">
                     <div>
                         <strong>Bad word warnings</strong>
-                        <span>Warn members when bad words are detected.</span>
+                        <span>
+                            Warn members when bad words are detected.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -404,14 +483,18 @@ function renderSettings(settings) {
                 <div class="settings-card-header">
                     <div>
                         <h2>Logging</h2>
-                        <p>Configure moderation logging.</p>
+                        <p>
+                            Configure moderation logging.
+                        </p>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div>
                         <strong>Logging enabled</strong>
-                        <span>Enable server logging.</span>
+                        <span>
+                            Enable server logging.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -442,14 +525,18 @@ function renderSettings(settings) {
                 <div class="settings-card-header">
                     <div>
                         <h2>Welcome</h2>
-                        <p>Configure your welcome system.</p>
+                        <p>
+                            Configure your welcome system.
+                        </p>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div>
                         <strong>Welcome messages</strong>
-                        <span>Send a welcome message for new members.</span>
+                        <span>
+                            Send a welcome message for new members.
+                        </span>
                     </div>
 
                     <label class="switch">
@@ -569,6 +656,10 @@ function renderSettings(settings) {
     }
 }
 
+// =================================
+// HTML ESCAPING
+// =================================
+
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -577,6 +668,10 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
+// =================================
+// NAVIGATION
+// =================================
 
 function setupNavigation() {
     const navItems =
@@ -622,7 +717,10 @@ async function navigateTo(page) {
                 </p>
             </div>
 
-            <div id="serverList" class="server-grid"></div>
+            <div
+                id="serverList"
+                class="server-grid"
+            ></div>
         `;
 
         renderServers();
@@ -667,7 +765,9 @@ async function navigateTo(page) {
             <div class="stats-grid">
                 <div class="stat-card">
                     <span>Servers</span>
-                    <strong>${currentServers.length}</strong>
+                    <strong>
+                        ${currentServers.length}
+                    </strong>
                 </div>
 
                 <div class="stat-card">
@@ -691,7 +791,9 @@ async function navigateTo(page) {
         content.innerHTML = `
             <div class="page-header">
                 <h2>Commands</h2>
-                <p>RuleMaster slash commands.</p>
+                <p>
+                    RuleMaster slash commands.
+                </p>
             </div>
 
             <div class="command-grid">
@@ -709,8 +811,13 @@ async function navigateTo(page) {
                     .map(
                         (command) => `
                             <div class="command-card">
-                                <strong>/${command}</strong>
-                                <span>RuleMaster command</span>
+                                <strong>
+                                    /${command}
+                                </strong>
+
+                                <span>
+                                    RuleMaster command
+                                </span>
                             </div>
                         `
                     )
@@ -722,7 +829,8 @@ async function navigateTo(page) {
     }
 
     if (page === "docs") {
-        pageTitle.textContent = "Documentation";
+        pageTitle.textContent =
+            "Documentation";
 
         content.innerHTML = `
             <div class="page-header">
@@ -759,6 +867,10 @@ async function navigateTo(page) {
     await navigateTo("dashboard");
 }
 
+// =================================
+// EVENTS
+// =================================
+
 function setupEvents() {
     if (loginBtn) {
         loginBtn.addEventListener(
@@ -788,6 +900,10 @@ function setupEvents() {
     setupNavigation();
 }
 
+// =================================
+// INIT
+// =================================
+
 async function init() {
     setupEvents();
 
@@ -795,7 +911,9 @@ async function init() {
         await checkSession();
 
     if (loggedIn) {
-        await navigateTo("dashboard");
+        await navigateTo(
+            "dashboard"
+        );
     }
 }
 
