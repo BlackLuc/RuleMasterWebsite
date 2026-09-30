@@ -66,18 +66,34 @@ async function apiFetch(endpoint, options = {}) {
     return response.json();
 }
 
-// LOGIN VIEW
+// LOGIN VIEW TOGGLING
 function showLogin() {
-    if (loginView) loginView.classList.remove("hidden");
-    if (appView) appView.classList.add("hidden");
+    if (loginView) {
+        loginView.classList.remove("hidden");
+        loginView.removeAttribute("hidden");
+        loginView.style.display = "grid";
+    }
+    if (appView) {
+        appView.classList.add("hidden");
+        appView.setAttribute("hidden", "");
+        appView.style.display = "none";
+    }
 }
 
 function showApp() {
-    if (loginView) loginView.classList.add("hidden");
-    if (appView) appView.classList.remove("hidden");
+    if (loginView) {
+        loginView.classList.add("hidden");
+        loginView.setAttribute("hidden", "");
+        loginView.style.display = "none";
+    }
+    if (appView) {
+        appView.classList.remove("hidden");
+        appView.removeAttribute("hidden");
+        appView.style.display = "flex";
+    }
 }
 
-// USER
+// USER UI
 function getAvatarUrl(user) {
     if (!user || !user.avatar) {
         return "https://cdn.discordapp.com/embed/avatars/0.png";
@@ -92,15 +108,13 @@ function updateUserUI() {
     if (userAvatar) userAvatar.src = getAvatarUrl(currentUser);
 }
 
-// SESSION
+// SESSION CHECK
 async function checkSession() {
-    // Check URL parameters for authentication token after OAuth redirect
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get("token");
     
     if (tokenFromUrl) {
         localStorage.setItem("rulemaster_token", tokenFromUrl);
-        // Clean up URL parameter
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
@@ -173,7 +187,7 @@ function renderServers() {
 
     if (currentServers.length === 0) {
         serverContainer.innerHTML = `
-            <div class="empty-state">
+            <div class="empty">
                 <h3>No manageable servers</h3>
                 <p>You need Administrator or Manage Server permissions to manage a server here.</p>
             </div>
@@ -183,7 +197,7 @@ function renderServers() {
 
     currentServers.forEach((server) => {
         const card = document.createElement("button");
-        card.className = "server-card";
+        card.className = "card server-card";
         if (selectedServer && selectedServer.id === server.id) {
             card.classList.add("active");
         }
@@ -193,10 +207,12 @@ function renderServers() {
             : "https://cdn.discordapp.com/embed/avatars/0.png";
 
         card.innerHTML = `
-            <img src="${icon}" alt="" class="server-icon">
-            <div class="server-info">
-                <strong>${escapeHtml(server.name)}</strong>
-                <span>${server.owner ? "Owner" : "Manage Server"}</span>
+            <div class="server-head">
+                <img src="${icon}" alt="" class="server-icon">
+                <div>
+                    <h3>${escapeHtml(server.name)}</h3>
+                    <code>${server.owner ? "Owner" : "Manage Server"}</code>
+                </div>
             </div>
         `;
 
@@ -250,49 +266,37 @@ function renderSettings(settings) {
     pageTitle.textContent = "Settings";
 
     content.innerHTML = `
-        <div class="settings-grid">
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <div>
-                        <h2>Moderation</h2>
-                        <p>Configure RuleMaster moderation features.</p>
-                    </div>
-                </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Moderation enabled</strong>
-                        <span>Enable RuleMaster moderation.</span>
-                    </div>
+        <div class="form">
+            <div class="card">
+                <h3>Moderation</h3>
+                <p class="muted">Configure RuleMaster moderation features.</p>
+                <br>
+                <div class="switch-row">
+                    <span>Moderation enabled</span>
                     <label class="switch">
                         <input type="checkbox" id="moderationEnabled" ${moderation.enabled ? "checked" : ""}>
                         <span></span>
                     </label>
                 </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Delete invites</strong>
-                        <span>Automatically remove Discord invites.</span>
-                    </div>
+                <br>
+                <div class="switch-row">
+                    <span>Delete invites</span>
                     <label class="switch">
                         <input type="checkbox" id="deleteInvites" ${moderation.deleteInvites ? "checked" : ""}>
                         <span></span>
                     </label>
                 </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Delete links</strong>
-                        <span>Automatically remove links.</span>
-                    </div>
+                <br>
+                <div class="switch-row">
+                    <span>Delete links</span>
                     <label class="switch">
                         <input type="checkbox" id="deleteLinks" ${moderation.deleteLinks ? "checked" : ""}>
                         <span></span>
                     </label>
                 </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Bad word warnings</strong>
-                        <span>Warn members when bad words are detected.</span>
-                    </div>
+                <br>
+                <div class="switch-row">
+                    <span>Bad word warnings</span>
                     <label class="switch">
                         <input type="checkbox" id="warnOnBadWords" ${moderation.warnOnBadWords ? "checked" : ""}>
                         <span></span>
@@ -300,53 +304,44 @@ function renderSettings(settings) {
                 </div>
             </div>
 
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <div>
-                        <h2>Logging</h2>
-                        <p>Configure moderation logging.</p>
-                    </div>
-                </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Logging enabled</strong>
-                        <span>Enable server logging.</span>
-                    </div>
+            <div class="card">
+                <h3>Logging</h3>
+                <p class="muted">Configure moderation logging.</p>
+                <br>
+                <div class="switch-row">
+                    <span>Logging enabled</span>
                     <label class="switch">
                         <input type="checkbox" id="loggingEnabled" ${logging.enabled ? "checked" : ""}>
                         <span></span>
                     </label>
                 </div>
-                <div class="setting-row column">
+                <br>
+                <div class="field">
                     <label for="loggingChannel">Logging channel ID</label>
-                    <input class="input" id="loggingChannel" value="${escapeHtml(logging.channelId || "")}" placeholder="Channel ID">
+                    <input id="loggingChannel" value="${escapeHtml(logging.channelId || "")}" placeholder="Channel ID">
                 </div>
             </div>
 
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <div>
-                        <h2>Welcome</h2>
-                        <p>Configure your welcome system.</p>
-                    </div>
-                </div>
-                <div class="setting-row">
-                    <div>
-                        <strong>Welcome messages</strong>
-                        <span>Send a welcome message for new members.</span>
-                    </div>
+            <div class="card">
+                <h3>Welcome</h3>
+                <p class="muted">Configure your welcome system.</p>
+                <br>
+                <div class="switch-row">
+                    <span>Welcome messages</span>
                     <label class="switch">
                         <input type="checkbox" id="welcomeEnabled" ${welcome.enabled ? "checked" : ""}>
                         <span></span>
                     </label>
                 </div>
-                <div class="setting-row column">
+                <br>
+                <div class="field">
                     <label for="welcomeChannel">Welcome channel ID</label>
-                    <input class="input" id="welcomeChannel" value="${escapeHtml(welcome.channelId || "")}" placeholder="Channel ID">
+                    <input id="welcomeChannel" value="${escapeHtml(welcome.channelId || "")}" placeholder="Channel ID">
                 </div>
-                <div class="setting-row column">
+                <br>
+                <div class="field">
                     <label for="welcomeMessage">Welcome message</label>
-                    <input class="input" id="welcomeMessage" value="${escapeHtml(welcome.message || "")}" placeholder="Welcome {user} to {server}!">
+                    <input id="welcomeMessage" value="${escapeHtml(welcome.message || "")}" placeholder="Welcome {user} to {server}!">
                 </div>
             </div>
 
@@ -409,11 +404,10 @@ async function navigateTo(page) {
     if (page === "servers") {
         pageTitle.textContent = "Servers";
         content.innerHTML = `
-            <div class="page-header">
-                <h2>Your Servers</h2>
-                <p>Select a server you have permission to manage.</p>
-            </div>
-            <div id="serverList" class="server-grid"></div>
+            <h2>Your Servers</h2>
+            <p class="muted">Select a server you have permission to manage.</p>
+            <br>
+            <div id="serverList" class="grid"></div>
         `;
         renderServers();
         return;
@@ -423,7 +417,7 @@ async function navigateTo(page) {
         if (!selectedServer) {
             pageTitle.textContent = "Settings";
             content.innerHTML = `
-                <div class="empty-state">
+                <div class="empty">
                     <h2>Select a server</h2>
                     <p>Choose a server from the Servers page first.</p>
                 </div>
@@ -437,21 +431,20 @@ async function navigateTo(page) {
     if (page === "dashboard") {
         pageTitle.textContent = "Dashboard";
         content.innerHTML = `
-            <div class="page-header">
-                <h2>Welcome to RuleMaster</h2>
-                <p>Manage your Discord servers from one place.</p>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span>Servers</span>
+            <h2>Welcome to RuleMaster</h2>
+            <p class="muted">Manage your Discord servers from one place.</p>
+            <br>
+            <div class="stats">
+                <div class="card stat">
+                    <small>Servers</small>
                     <strong>${currentServers.length}</strong>
                 </div>
-                <div class="stat-card">
-                    <span>Commands</span>
+                <div class="card stat">
+                    <small>Commands</small>
                     <strong>9</strong>
                 </div>
-                <div class="stat-card">
-                    <span>Status</span>
+                <div class="card stat">
+                    <small>Status</small>
                     <strong>Online</strong>
                 </div>
             </div>
@@ -462,13 +455,12 @@ async function navigateTo(page) {
     if (page === "commands") {
         pageTitle.textContent = "Commands";
         content.innerHTML = `
-            <div class="page-header">
-                <h2>Commands</h2>
-                <p>RuleMaster slash commands.</p>
-            </div>
-            <div class="command-grid">
+            <h2>Commands</h2>
+            <p class="muted">RuleMaster slash commands.</p>
+            <br>
+            <div class="grid">
                 ${["announce", "help", "moderation", "roblox", "rules", "settings", "staff", "stats", "suggest"]
-                    .map((cmd) => `<div class="command-card"><strong>/${cmd}</strong><span>RuleMaster command</span></div>`)
+                    .map((cmd) => `<div class="card cmd"><code>/${cmd}</code><p>RuleMaster command</p></div>`)
                     .join("")}
             </div>
         `;
@@ -478,18 +470,17 @@ async function navigateTo(page) {
     if (page === "docs") {
         pageTitle.textContent = "Documentation";
         content.innerHTML = `
-            <div class="page-header">
-                <h2>Documentation</h2>
-                <p>Learn how to configure and use RuleMaster.</p>
-            </div>
-            <div class="docs-grid">
-                <div class="settings-card">
-                    <h2>Getting Started</h2>
-                    <p>Invite RuleMaster to your Discord server, then use the dashboard to configure it.</p>
+            <h2>Documentation</h2>
+            <p class="muted">Learn how to configure and use RuleMaster.</p>
+            <br>
+            <div class="grid">
+                <div class="card">
+                    <h3>Getting Started</h3>
+                    <p class="muted">Invite RuleMaster to your Discord server, then use the dashboard to configure it.</p>
                 </div>
-                <div class="settings-card">
-                    <h2>Permissions</h2>
-                    <p>You need Administrator or Manage Server permissions to manage a server.</p>
+                <div class="card">
+                    <h3>Permissions</h3>
+                    <p class="muted">You need Administrator or Manage Server permissions to manage a server.</p>
                 </div>
             </div>
         `;
@@ -504,9 +495,9 @@ async function navigateTo(page) {
 function setupEvents() {
     if (loginBtn) loginBtn.addEventListener("click", login);
     if (logoutBtn) logoutBtn.addEventListener("click", logout);
-    if (menuBtn) {
+    if (menuBtn && document.getElementById("sidebar")) {
         menuBtn.addEventListener("click", () => {
-            document.body.classList.toggle("sidebar-open");
+            document.getElementById("sidebar").classList.toggle("open");
         });
     }
     setupNavigation();

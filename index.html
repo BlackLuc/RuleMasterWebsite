@@ -15,7 +15,7 @@
 <body>
 
   <!-- LOGIN SCREEN -->
-  <section id="loginView" class="login-view" hidden>
+  <section id="loginView" class="login-view">
     <div class="login-card">
       <div class="logo-icon big">R</div>
       <h1>RuleMaster <span>2.0</span></h1>
@@ -36,7 +36,7 @@
   </section>
 
   <!-- APP -->
-  <div id="appView" class="app" hidden>
+  <div id="appView" class="app hidden">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#/dashboard">
         <span class="logo-icon">R</span>
@@ -44,13 +44,13 @@
       </a>
 
       <nav class="nav">
-        <a href="#/dashboard" data-route="dashboard">▦ <span>Dashboard</span></a>
-        <a href="#/servers" data-route="servers">◎ <span>Servers</span></a>
-        <a href="#/commands" data-route="commands">⌘ <span>Commands</span></a>
-        <a href="#/settings" data-route="settings">⚙ <span>Settings</span></a>
+        <a href="javascript:void(0)" data-page="dashboard" class="active">▦ <span>Dashboard</span></a>
+        <a href="javascript:void(0)" data-page="servers">◎ <span>Servers</span></a>
+        <a href="javascript:void(0)" data-page="commands">⌘ <span>Commands</span></a>
+        <a href="javascript:void(0)" data-page="settings">⚙ <span>Settings</span></a>
         <div class="nav-sep"></div>
         <a href="https://discord.gg/" target="_blank" rel="noopener">? <span>Support</span></a>
-        <a href="#/docs" data-route="docs">▤ <span>Documentation</span></a>
+        <a href="javascript:void(0)" data-page="docs">▤ <span>Documentation</span></a>
       </nav>
 
       <div class="profile">
