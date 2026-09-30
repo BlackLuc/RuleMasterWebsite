@@ -20,7 +20,6 @@ let currentUser = null;
 let currentServers = [];
 let selectedServer = null;
 
-// TOAST
 function showToast(message) {
     if (!toast) return;
     toast.textContent = message;
@@ -28,54 +27,38 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// API FETCH WITH BEARER TOKEN
 async function apiFetch(endpoint, options = {}) {
     const token = localStorage.getItem("rulemaster_token");
-    
-    const headers = {
-        ...(options.headers || {})
-    };
+    const headers = { ...(options.headers || {}) };
 
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-    }
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    if (options.body) headers["Content-Type"] = "application/json";
 
-    if (options.body) {
-        headers["Content-Type"] = "application/json";
-    }
-
-    const config = {
+    const response = await fetch(`${API_URL}${endpoint}`, {
         credentials: "include",
         ...options,
         headers
-    };
-
-    const response = await fetch(`${API_URL}${endpoint}`, config);
+    });
 
     if (!response.ok) {
         let message = "Request failed.";
         try {
             const data = await response.json();
             if (data.message) message = data.message;
-        } catch {
-            // Ignore JSON parse errors
-        }
+        } catch {}
         throw new Error(message);
     }
 
     return response.json();
 }
 
-// LOGIN VIEW TOGGLING
 function showLogin() {
     if (loginView) {
         loginView.classList.remove("hidden");
-        loginView.removeAttribute("hidden");
         loginView.style.display = "grid";
     }
     if (appView) {
         appView.classList.add("hidden");
-        appView.setAttribute("hidden", "");
         appView.style.display = "none";
     }
 }
@@ -83,21 +66,16 @@ function showLogin() {
 function showApp() {
     if (loginView) {
         loginView.classList.add("hidden");
-        loginView.setAttribute("hidden", "");
         loginView.style.display = "none";
     }
     if (appView) {
         appView.classList.remove("hidden");
-        appView.removeAttribute("hidden");
         appView.style.display = "flex";
     }
 }
 
-// USER UI
 function getAvatarUrl(user) {
-    if (!user || !user.avatar) {
-        return "https://cdn.discordapp.com/embed/avatars/0.png";
-    }
+    if (!user || !user.avatar) return "https://cdn.discordapp.com/embed/avatars/0.png";
     return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
 }
 
@@ -108,11 +86,10 @@ function updateUserUI() {
     if (userAvatar) userAvatar.src = getAvatarUrl(currentUser);
 }
 
-// SESSION CHECK
 async function checkSession() {
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get("token");
-    
+
     if (tokenFromUrl) {
         localStorage.setItem("rulemaster_token", tokenFromUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -131,13 +108,11 @@ async function checkSession() {
         await loadServers();
         return true;
     } catch (error) {
-        console.error("Session check failed:", error);
         showLogin();
         return false;
     }
 }
 
-// LOGIN / LOGOUT
 function login() {
     window.location.href = `${API_URL}/auth/discord`;
 }
@@ -145,21 +120,15 @@ function login() {
 async function logout() {
     try {
         await apiFetch("/auth/logout", { method: "POST" });
-        localStorage.removeItem("rulemaster_token");
-        currentUser = null;
-        currentServers = [];
-        selectedServer = null;
-        showLogin();
-        showToast("Logged out.");
-    } catch (error) {
-        console.error("Logout failed:", error);
-        localStorage.removeItem("rulemaster_token");
-        showLogin();
-        showToast("Logged out.");
-    }
+    } catch {}
+    localStorage.removeItem("rulemaster_token");
+    currentUser = null;
+    currentServers = [];
+    selectedServer = null;
+    showLogin();
+    showToast("Logged out.");
 }
 
-// SERVERS
 async function loadServers() {
     try {
         const data = await apiFetch("/api/servers");
@@ -170,11 +139,6 @@ async function loadServers() {
             selectServer(currentServers[0]);
         }
     } catch (error) {
-        console.error("Could not load servers:", error);
-        if (error.message.includes("logged in")) {
-            showLogin();
-            return;
-        }
         showToast("Could not load your Discord servers.");
     }
 }
@@ -186,12 +150,7 @@ function renderServers() {
     serverContainer.innerHTML = "";
 
     if (currentServers.length === 0) {
-        serverContainer.innerHTML = `
-            <div class="empty">
-                <h3>No manageable servers</h3>
-                <p>You need Administrator or Manage Server permissions to manage a server here.</p>
-            </div>
-        `;
+        serverContainer.innerHTML = `<div class="empty"><h3>No manageable servers found</h3></div>`;
         return;
     }
 
@@ -227,13 +186,15 @@ function selectServer(server) {
     loadServerSettings(server.id);
 }
 
-// SETTINGS
 async function loadServerSettings(guildId) {
     try {
-        const data = await apiFetch(`/api/settings/${guildId}`);
-        renderSettings(data.settings || {});
+        const [settingsData, detailsData] = await Promise.all([
+            apiFetch(`/api/settings/${guildId}`),
+            apiFetch(`/api/servers/${guildId}/details`).catch(() => ({ channels: [], roles: [] }))
+        ]);
+
+        renderSettings(settingsData.settings || {}, detailsData.channels || [], detailsData.roles || []);
     } catch (error) {
-        console.error("Could not load server settings:", error);
         showToast("Could not load server settings.");
     }
 }
@@ -249,27 +210,42 @@ async function saveServerSettings(settings) {
             method: "PUT",
             body: JSON.stringify(settings)
         });
-        showToast("Settings saved.");
+        showToast("Settings saved successfully!");
     } catch (error) {
-        console.error("Could not save settings:", error);
         showToast("Could not save settings.");
     }
 }
 
-function renderSettings(settings) {
+function renderSettings(settings, channels, roles) {
     const moderation = settings.moderation || {};
     const logging = settings.logging || {};
     const welcome = settings.welcome || {};
+    const permissions = settings.permissions || {};
 
     if (!content) return;
-
     pageTitle.textContent = "Settings";
+
+    const buildChannelOptions = (selectedId) => {
+        let opts = `<option value="">-- Select Channel --</option>`;
+        channels.forEach((c) => {
+            opts += `<option value="${c.id}" ${c.id === selectedId ? "selected" : ""}>#${escapeHtml(c.name)}</option>`;
+        });
+        return opts;
+    };
+
+    const buildRoleOptions = (selectedId) => {
+        let opts = `<option value="">-- Select Role --</option>`;
+        roles.forEach((r) => {
+            opts += `<option value="${r.id}" ${r.id === selectedId ? "selected" : ""}>@${escapeHtml(r.name)}</option>`;
+        });
+        return opts;
+    };
 
     content.innerHTML = `
         <div class="form">
             <div class="card">
                 <h3>Moderation</h3>
-                <p class="muted">Configure RuleMaster moderation features.</p>
+                <p class="muted">Configure RuleMaster auto-moderation settings.</p>
                 <br>
                 <div class="switch-row">
                     <span>Moderation enabled</span>
@@ -294,19 +270,11 @@ function renderSettings(settings) {
                         <span></span>
                     </label>
                 </div>
-                <br>
-                <div class="switch-row">
-                    <span>Bad word warnings</span>
-                    <label class="switch">
-                        <input type="checkbox" id="warnOnBadWords" ${moderation.warnOnBadWords ? "checked" : ""}>
-                        <span></span>
-                    </label>
-                </div>
             </div>
 
             <div class="card">
-                <h3>Logging</h3>
-                <p class="muted">Configure moderation logging.</p>
+                <h3>Logging Channel</h3>
+                <p class="muted">Select the channel for moderation and system logs.</p>
                 <br>
                 <div class="switch-row">
                     <span>Logging enabled</span>
@@ -317,17 +285,19 @@ function renderSettings(settings) {
                 </div>
                 <br>
                 <div class="field">
-                    <label for="loggingChannel">Logging channel ID</label>
-                    <input id="loggingChannel" value="${escapeHtml(logging.channelId || "")}" placeholder="Channel ID">
+                    <label for="loggingChannel">Log Channel</label>
+                    <select id="loggingChannel">
+                        ${buildChannelOptions(logging.channelId)}
+                    </select>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Welcome</h3>
-                <p class="muted">Configure your welcome system.</p>
+                <h3>Welcome Channel</h3>
+                <p class="muted">Configure welcome messages for new server members.</p>
                 <br>
                 <div class="switch-row">
-                    <span>Welcome messages</span>
+                    <span>Welcome enabled</span>
                     <label class="switch">
                         <input type="checkbox" id="welcomeEnabled" ${welcome.enabled ? "checked" : ""}>
                         <span></span>
@@ -335,13 +305,34 @@ function renderSettings(settings) {
                 </div>
                 <br>
                 <div class="field">
-                    <label for="welcomeChannel">Welcome channel ID</label>
-                    <input id="welcomeChannel" value="${escapeHtml(welcome.channelId || "")}" placeholder="Channel ID">
+                    <label for="welcomeChannel">Welcome Channel</label>
+                    <select id="welcomeChannel">
+                        ${buildChannelOptions(welcome.channelId)}
+                    </select>
                 </div>
                 <br>
                 <div class="field">
-                    <label for="welcomeMessage">Welcome message</label>
+                    <label for="welcomeMessage">Welcome Message</label>
                     <input id="welcomeMessage" value="${escapeHtml(welcome.message || "")}" placeholder="Welcome {user} to {server}!">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Role Permissions</h3>
+                <p class="muted">Restrict command usage to specific roles in your server.</p>
+                <br>
+                <div class="field">
+                    <label for="adminRole">Admin Role</label>
+                    <select id="adminRole">
+                        ${buildRoleOptions(permissions.adminRoleId)}
+                    </select>
+                </div>
+                <br>
+                <div class="field">
+                    <label for="modRole">Moderator Role</label>
+                    <select id="modRole">
+                        ${buildRoleOptions(permissions.modRoleId)}
+                    </select>
                 </div>
             </div>
 
@@ -349,32 +340,33 @@ function renderSettings(settings) {
         </div>
     `;
 
-    const saveButton = document.getElementById("saveSettingsBtn");
-    if (saveButton) {
-        saveButton.addEventListener("click", async () => {
-            const newSettings = {
-                moderation: {
-                    enabled: document.getElementById("moderationEnabled").checked,
-                    deleteInvites: document.getElementById("deleteInvites").checked,
-                    deleteLinks: document.getElementById("deleteLinks").checked,
-                    warnOnBadWords: document.getElementById("warnOnBadWords").checked
-                },
-                logging: {
-                    enabled: document.getElementById("loggingEnabled").checked,
-                    channelId: document.getElementById("loggingChannel").value.trim()
-                },
-                welcome: {
-                    enabled: document.getElementById("welcomeEnabled").checked,
-                    channelId: document.getElementById("welcomeChannel").value.trim(),
-                    message: document.getElementById("welcomeMessage").value
-                }
-            };
-            await saveServerSettings(newSettings);
-        });
-    }
+    document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
+        const newSettings = {
+            moderation: {
+                enabled: document.getElementById("moderationEnabled").checked,
+                deleteInvites: document.getElementById("deleteInvites").checked,
+                deleteLinks: document.getElementById("deleteLinks").checked,
+                warnOnBadWords: moderation.warnOnBadWords || false
+            },
+            logging: {
+                enabled: document.getElementById("loggingEnabled").checked,
+                channelId: document.getElementById("loggingChannel").value
+            },
+            welcome: {
+                enabled: document.getElementById("welcomeEnabled").checked,
+                channelId: document.getElementById("welcomeChannel").value,
+                message: document.getElementById("welcomeMessage").value
+            },
+            permissions: {
+                adminRoleId: document.getElementById("adminRole").value,
+                modRoleId: document.getElementById("modRole").value
+            }
+        };
+
+        await saveServerSettings(newSettings);
+    });
 }
 
-// HTML ESCAPING
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -384,7 +376,6 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-// NAVIGATION
 function setupNavigation() {
     const navItems = document.querySelectorAll("[data-page]");
     navItems.forEach((item) => {
@@ -478,10 +469,6 @@ async function navigateTo(page) {
                     <h3>Getting Started</h3>
                     <p class="muted">Invite RuleMaster to your Discord server, then use the dashboard to configure it.</p>
                 </div>
-                <div class="card">
-                    <h3>Permissions</h3>
-                    <p class="muted">You need Administrator or Manage Server permissions to manage a server.</p>
-                </div>
             </div>
         `;
         return;
@@ -491,7 +478,6 @@ async function navigateTo(page) {
     await navigateTo("dashboard");
 }
 
-// EVENTS & INIT
 function setupEvents() {
     if (loginBtn) loginBtn.addEventListener("click", login);
     if (logoutBtn) logoutBtn.addEventListener("click", logout);
