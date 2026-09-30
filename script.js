@@ -28,19 +28,27 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// API FETCH
+// API FETCH WITH BEARER TOKEN
 async function apiFetch(endpoint, options = {}) {
-    const config = {
-        credentials: "include",
-        ...options
+    const token = localStorage.getItem("rulemaster_token");
+    
+    const headers = {
+        ...(options.headers || {})
     };
 
-    if (config.body) {
-        config.headers = {
-            "Content-Type": "application/json",
-            ...(config.headers || {})
-        };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
     }
+
+    if (options.body) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    const config = {
+        credentials: "include",
+        ...options,
+        headers
+    };
 
     const response = await fetch(`${API_URL}${endpoint}`, config);
 
@@ -86,6 +94,16 @@ function updateUserUI() {
 
 // SESSION
 async function checkSession() {
+    // Check URL parameters for authentication token after OAuth redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+    
+    if (tokenFromUrl) {
+        localStorage.setItem("rulemaster_token", tokenFromUrl);
+        // Clean up URL parameter
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     try {
         const data = await apiFetch("/auth/me");
         if (!data.authenticated) {
@@ -113,6 +131,7 @@ function login() {
 async function logout() {
     try {
         await apiFetch("/auth/logout", { method: "POST" });
+        localStorage.removeItem("rulemaster_token");
         currentUser = null;
         currentServers = [];
         selectedServer = null;
@@ -120,7 +139,9 @@ async function logout() {
         showToast("Logged out.");
     } catch (error) {
         console.error("Logout failed:", error);
-        showToast("Logout failed.");
+        localStorage.removeItem("rulemaster_token");
+        showLogin();
+        showToast("Logged out.");
     }
 }
 
