@@ -3,7 +3,6 @@ const API_URL = "https://rulemaster20-production.up.railway.app";
 const loginView = document.getElementById("loginView");
 const appView = document.getElementById("appView");
 
-const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 const userAvatar = document.getElementById("userAvatar");
@@ -55,7 +54,7 @@ async function apiFetch(endpoint, options = {}) {
 function showLogin() {
     if (loginView) {
         loginView.classList.remove("hidden");
-        loginView.style.display = "grid";
+        loginView.style.display = "flex";
     }
     if (appView) {
         appView.classList.add("hidden");
@@ -336,7 +335,7 @@ function renderSettings(settings, channels, roles) {
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+            <button class="btn btn-discord-lg" id="saveSettingsBtn">Save Settings</button>
         </div>
     `;
 
@@ -408,9 +407,9 @@ async function navigateTo(page) {
         if (!selectedServer) {
             pageTitle.textContent = "Settings";
             content.innerHTML = `
-                <div class="empty">
+                <div class="card">
                     <h2>Select a server</h2>
-                    <p>Choose a server from the Servers page first.</p>
+                    <p class="muted">Choose a server from the Servers page first.</p>
                 </div>
             `;
             return;
@@ -451,7 +450,7 @@ async function navigateTo(page) {
             <br>
             <div class="grid">
                 ${["announce", "help", "moderation", "roblox", "rules", "settings", "staff", "stats", "suggest"]
-                    .map((cmd) => `<div class="card cmd"><code>/${cmd}</code><p>RuleMaster command</p></div>`)
+                    .map((cmd) => `<div class="card"><code>/${cmd}</code><p class="muted">RuleMaster command</p></div>`)
                     .join("")}
             </div>
         `;
@@ -479,7 +478,10 @@ async function navigateTo(page) {
 }
 
 function setupEvents() {
-    if (loginBtn) loginBtn.addEventListener("click", login);
+    document.querySelectorAll(".login-trigger").forEach((btn) => {
+        btn.addEventListener("click", login);
+    });
+
     if (logoutBtn) logoutBtn.addEventListener("click", logout);
     if (menuBtn && document.getElementById("sidebar")) {
         menuBtn.addEventListener("click", () => {

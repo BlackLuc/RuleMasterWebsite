@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090a10">
-  <title>RuleMaster 2.0 — Dashboard</title>
+  <title>RuleMaster 2.0 — The Best All-in-One Bot for Discord</title>
   <meta name="description" content="Manage RuleMaster 2.0 on your Discord servers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,25 +14,86 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
-  <section id="loginView" class="login-view">
-    <div class="login-card">
-      <div class="logo-icon big">R</div>
-      <h1>RuleMaster <span>2.0</span></h1>
-      <p>Log in with your Discord account to manage your servers. No separate account needed.</p>
-      
-      <button id="loginBtn" class="btn btn-discord">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor">
-          <path d="M19.54 4.23A18.65 18.65 0 0 0 15.8 3l-.46.94a17.26 17.26 0 0 0-6.68 0L8.2 3a18.72 18.72 0 0 0-3.74 1.23C2.09 7.86 1.45 11.39 1.77 14.87a18.7 18.7 0 0 0 4.59 2.31l1.11-1.5a11.88 11.88 0 0 1-1.75-.84l.42-.32a13.3 13.3 0 0 0 11.72 0l.43.32a11.78 11.78 0 0 1-1.76.84l1.11 1.5a18.67 18.67 0 0 0 4.59-2.31c.37-4.08-.63-7.58-2.69-10.64ZM8.63 13.58c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Zm6.74 0c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Z"/>
-        </svg>
-        <span>Login with Discord</span>
-      </button>
+  <!-- PUBLIC LANDING PAGE (MEE6 STYLE) -->
+  <div id="loginView" class="landing-page">
+    
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a class="nav-logo" href="#">
+          <div class="logo-icon">R</div>
+          <span>RuleMaster <em>2.0</em></span>
+        </a>
 
-      <small>We only read your username, avatar and server list.</small>
-    </div>
-  </section>
+        <nav class="nav-links">
+          <a href="#features">Plugins</a>
+          <a href="#features">Features</a>
+          <a href="https://discord.gg/" target="_blank" rel="noopener">Support</a>
+        </nav>
 
-  <!-- DASHBOARD APP -->
+        <div class="nav-actions">
+          <button class="btn btn-discord-sm login-trigger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M19.54 4.23A18.65 18.65 0 0 0 15.8 3l-.46.94a17.26 17.26 0 0 0-6.68 0L8.2 3a18.72 18.72 0 0 0-3.74 1.23C2.09 7.86 1.45 11.39 1.77 14.87a18.7 18.7 0 0 0 4.59 2.31l1.11-1.5a11.88 11.88 0 0 1-1.75-.84l.42-.32a13.3 13.3 0 0 0 11.72 0l.43.32a11.78 11.78 0 0 1-1.76.84l1.11 1.5a18.67 18.67 0 0 0 4.59-2.31c.37-4.08-.63-7.58-2.69-10.64ZM8.63 13.58c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Zm6.74 0c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Z"/>
+            </svg>
+            <span>Login with Discord</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">The best <br><span class="gradient-text">All-in-One Bot</span><br> for Discord</h1>
+          <p class="hero-subtitle">
+            RuleMaster 2.0 is a complete, easy-to-use Discord bot trusted by server owners worldwide to moderate, engage, and grow their community.
+          </p>
+          <div class="hero-cta">
+            <button class="btn btn-discord-lg login-trigger">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M19.54 4.23A18.65 18.65 0 0 0 15.8 3l-.46.94a17.26 17.26 0 0 0-6.68 0L8.2 3a18.72 18.72 0 0 0-3.74 1.23C2.09 7.86 1.45 11.39 1.77 14.87a18.7 18.7 0 0 0 4.59 2.31l1.11-1.5a11.88 11.88 0 0 1-1.75-.84l.42-.32a13.3 13.3 0 0 0 11.72 0l.43.32a11.78 11.78 0 0 1-1.76.84l1.11 1.5a18.67 18.67 0 0 0 4.59-2.31c.37-4.08-.63-7.58-2.69-10.64ZM8.63 13.58c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Zm6.74 0c-1.13 0-2.05-1.04-2.05-2.32s.9-2.33 2.05-2.33 2.07 1.05 2.05 2.33c0 1.28-.91 2.32-2.05 2.32Z"/>
+              </svg>
+              <span>Add to Discord</span>
+            </button>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
+          </div>
+        </div>
+
+        <div class="hero-graphic">
+          <div class="mascot-badge badge-1">🛡️ Auto Mod</div>
+          <div class="mascot-badge badge-2">🎉 Welcome System</div>
+          <div class="mascot-badge badge-3">📊 Statistics</div>
+          <div class="hero-glow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof Banner -->
+    <section class="social-proof">
+      <div class="proof-container">
+        <h2>Used by communities across Discord</h2>
+        <div class="proof-stats">
+          <div class="stat-item">
+            <strong>2.5K+</strong>
+            <span>Active Guilds</span>
+          </div>
+          <div class="stat-item">
+            <strong>100K+</strong>
+            <span>Users Managed</span>
+          </div>
+          <div class="stat-item">
+            <strong>99.9%</strong>
+            <span>Uptime</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- DASHBOARD APP (SHOWN WHEN LOGGED IN) -->
   <div id="appView" class="app hidden">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="javascript:void(0)" data-page="dashboard">
