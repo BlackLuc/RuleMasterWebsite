@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
 :root {
-  /* MEE6 Inspired Color Palette */
   --bg: #090a10;
   --bg-2: #0f111a;
   --bg-3: #161926;
@@ -14,17 +13,17 @@
   --muted: #8e95b0;
   --muted-dark: #5c627a;
   
-  --accent: #615fff;
-  --accent-hover: #7371ff;
-  --accent-glow: rgba(97, 95, 255, 0.35);
+  --accent: #5865f2;
+  --accent-hover: #6975ff;
+  --accent-glow: rgba(88, 101, 242, 0.35);
   
   --success: #00d26a;
   --danger: #ff4757;
   --warn: #ffa502;
   
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   
   --heading: "Space Grotesk", sans-serif;
   --body: "DM Sans", sans-serif;
@@ -39,8 +38,8 @@ body {
   min-width: 320px;
   background-color: var(--bg);
   background-image: 
-    radial-gradient(circle at 15% 10%, rgba(97, 95, 255, 0.12), transparent 45%),
-    radial-gradient(circle at 85% 90%, rgba(115, 113, 255, 0.08), transparent 45%);
+    radial-gradient(circle at 50% 20%, rgba(88, 101, 242, 0.12), transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(105, 117, 255, 0.08), transparent 50%);
   background-attachment: fixed;
   color: var(--text);
   font-family: var(--body);
@@ -99,8 +98,8 @@ h1, h2, h3, h4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 12px 22px;
+  gap: 12px;
+  padding: 12px 24px;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   font-weight: 700;
@@ -109,22 +108,35 @@ h1, h2, h3, h4 {
   letter-spacing: 0.2px;
 }
 
-.btn-primary, .btn-discord {
+.btn-primary {
   background: var(--accent);
   color: #ffffff;
   box-shadow: 0 4px 20px var(--accent-glow);
 }
 
-.btn-primary:hover, .btn-discord:hover {
+.btn-primary:hover {
   background: var(--accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px var(--accent-glow);
 }
 
 .btn-discord {
+  background: var(--accent);
+  color: #ffffff;
   padding: 16px 32px;
   font-size: 16px;
-  border-radius: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 25px var(--accent-glow);
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.btn-discord:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px var(--accent-glow);
 }
 
 .btn-ghost {
@@ -136,7 +148,6 @@ h1, h2, h3, h4 {
 .btn-ghost:hover {
   background: var(--card-hover);
   border-color: var(--border-light);
-  color: #ffffff;
 }
 
 .icon-btn {
@@ -165,42 +176,41 @@ h1, h2, h3, h4 {
   height: 42px;
   flex: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #615fff, #8b89ff);
+  background: linear-gradient(135deg, #5865f2, #7983ff);
   color: #ffffff;
   font: 800 20px var(--heading);
   box-shadow: 0 6px 20px var(--accent-glow);
 }
 
 .logo-icon.big {
-  width: 80px;
-  height: 80px;
-  font-size: 38px;
-  border-radius: 24px;
+  width: 72px;
+  height: 72px;
+  font-size: 34px;
+  border-radius: 20px;
   margin: 0 auto 24px;
 }
 
-/* Login Page (MEE6 Hero Style) */
+/* Centered Landing / Login Card */
 .login-view {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
-  background: radial-gradient(circle at 50% 30%, rgba(97, 95, 255, 0.18), transparent 60%);
 }
 
 .login-card {
-  width: min(480px, 100%);
+  width: min(440px, 100%);
   text-align: center;
-  padding: 52px 40px;
+  padding: 48px 36px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 28px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
   animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .login-card h1 {
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: -0.5px;
 }
 
@@ -211,8 +221,8 @@ h1, h2, h3, h4 {
 .login-card p {
   color: var(--muted);
   line-height: 1.6;
-  margin: 16px 0 32px;
-  font-size: 16px;
+  margin: 16px 0 28px;
+  font-size: 15px;
 }
 
 .login-card small {
@@ -228,7 +238,6 @@ h1, h2, h3, h4 {
   min-height: 100vh;
 }
 
-/* Sidebar Navigation */
 .sidebar {
   position: sticky;
   top: 0;
@@ -292,7 +301,6 @@ h1, h2, h3, h4 {
   margin: 14px 8px;
 }
 
-/* User Profile Widget in Sidebar */
 .profile {
   display: flex;
   align-items: center;
@@ -331,7 +339,6 @@ h1, h2, h3, h4 {
   font-size: 12px;
 }
 
-/* Main Content Area */
 .main {
   flex: 1;
   min-width: 0;
@@ -365,7 +372,7 @@ h1, h2, h3, h4 {
   animation: rise 0.35s ease;
 }
 
-/* MEE6 Feature Grid & Cards */
+/* Dashboard Cards & Layout */
 .grid {
   display: grid;
   gap: 20px;
@@ -412,7 +419,7 @@ h1, h2, h3, h4 {
   color: var(--muted);
 }
 
-/* Server Cards */
+/* Server Selection Cards */
 .server-card {
   display: flex;
   flex-direction: column;
@@ -427,7 +434,7 @@ h1, h2, h3, h4 {
 .server-card:hover, .server-card.active {
   border-color: var(--accent);
   background: var(--card-hover);
-  box-shadow: 0 8px 24px rgba(97, 95, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(88, 101, 242, 0.25);
 }
 
 .server-head {
@@ -468,7 +475,7 @@ h1, h2, h3, h4 {
   margin-top: 4px;
 }
 
-/* Form Elements & Inputs */
+/* Settings & Form Elements */
 .form {
   display: grid;
   gap: 24px;
@@ -520,7 +527,6 @@ h1, h2, h3, h4 {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* Toggle Switches */
 .switch-row {
   display: flex;
   justify-content: space-between;
@@ -578,7 +584,6 @@ h1, h2, h3, h4 {
   color: var(--muted);
 }
 
-/* Toast Notification */
 .toast {
   position: fixed;
   bottom: 28px;
@@ -611,7 +616,6 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Responsive Mobile Layout */
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
